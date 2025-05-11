@@ -78,7 +78,11 @@ class CalculadoraState extends State<CalculadoraPage> {
   Widget crearBoton(String texto) {
     return ElevatedButton(
       onPressed: () => presionarBoton(texto),
-      child: Text(texto),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.all(20),
+        shape: StadiumBorder(),
+      ),
+      child: Text(texto, style: TextStyle(fontSize: 24)),
     );
   }
 
@@ -91,35 +95,53 @@ class CalculadoraState extends State<CalculadoraPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(pantalla),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  crearBoton('7'), crearBoton('8'), crearBoton('9'), crearBoton('/'),
-                ],
+              Expanded(
+                flex: 2,
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    pantalla,
+                    style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  crearBoton('4'), crearBoton('5'), crearBoton('6'), crearBoton('x'),
-                ],
+              Expanded(
+                flex: 5,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        crearBoton('7'), crearBoton('8'), crearBoton('9'), crearBoton('/'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        crearBoton('4'), crearBoton('5'), crearBoton('6'), crearBoton('x'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        crearBoton('1'), crearBoton('2'), crearBoton('3'), crearBoton('+'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        crearBoton('0'), crearBoton('AC'), crearBoton('='), crearBoton('-'),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  crearBoton('1'), crearBoton('2'), crearBoton('3'), crearBoton('+'),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  crearBoton('0'), crearBoton('AC'), crearBoton('='), crearBoton('-'),
-                ],
-              ),
+              SizedBox(height: 16),
             ],
           ),
         ),
