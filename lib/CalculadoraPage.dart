@@ -10,123 +10,116 @@ class CalculadoraPage extends StatefulWidget {
 }
 
 class CalculadoraState extends State<CalculadoraPage> {
-  int resultado = 0;
-  String operacion = '+'; // operación por defecto
-  TextEditingController controller1 = TextEditingController();
-  TextEditingController controller2 = TextEditingController();
+  double resultado = 0;
+  String? ultimaOperacion;
+  bool resultadoCalculado = false;
+  String pantalla = '';
+
+  void presionarBoton(String valBoton) {
+    setState(() {
+      if(pantalla == "Error" || ultimaOperacion == '='){
+       pantalla = '';
+      }
+      if(valBoton == 'AC'){
+        ultimaOperacion = '';
+        pantalla = '';
+      } else if(valBoton == '=') {
+        try {
+          ultimaOperacion = "=";
+          pantalla = evaluarExpresion(pantalla);
+        } catch (error) {
+          pantalla = "Error";
+        }
+      } else {
+        ultimaOperacion = '';
+        pantalla += valBoton;
+      }
+    });
+  }
+
+  String evaluarExpresion(String expresion) {
+    var operacion;
+    List<String> operadores = ['+', '-', 'x', '/'];
+    String? operador;
+
+    for (var op in operadores) {
+      if (expresion.contains(op)) {
+        if (operador != null) {
+          return "Error";
+        }
+        operador = op;
+      }
+    }
+    print(operador);
+    if(operador == null) return "Error";
+
+    operacion = expresion.split(operador!);
+    if (operacion.length != 2) return "Error";
+    double operando1 = double.parse(operacion[0]);
+    double operando2 = double.parse(operacion[1]);
+
+    switch (operador) {
+      case '+':
+        return (operando1 + operando2).toString();
+      case '-':
+        return (operando1 - operando2).toString();
+      case 'x':
+        return (operando1 * operando2).toString();
+      case '/':
+        if(operando2 != 0){
+          return (operando1 / operando2).toString();
+        } else {
+          return "Error";
+        }
+    }
+    return "Error";
+  }
+
+  Widget crearBoton(String texto) {
+    return ElevatedButton(
+      onPressed: () => presionarBoton(texto),
+      child: Text(texto),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Calculadora APP")),
       body: Container(
-        padding: EdgeInsets.all(20),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Por favor introduce los operandos que quieres utilizar: "),
-              Padding(padding: EdgeInsets.only(bottom: 24)),
+              Text(pantalla),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: TextField(
-                      controller: controller1,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Introduce Operando 1",
-                      ),
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.only(left: 12.0, right: 12.0)),
-                  Expanded(
-                    child: TextField(
-                      controller: controller2,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Introduce Operando 2",
-                      ),
-                    ),
-                  ),
+                  crearBoton('7'), crearBoton('8'), crearBoton('9'), crearBoton('/'),
                 ],
               ),
-              Padding(padding: EdgeInsets.only(bottom: 24)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ElevatedButton( // Suma
-                    onPressed: () {
-                      setState(() {
-                        operacion = '+';
-                      });
-                    },
-                    child: Text('+')
-                  ),
-                  ElevatedButton( // Resta
-                    onPressed: () {
-                      setState(() {
-                        operacion = '-';
-                    });
-                  }, child: Text('-')
-                  ),
-                  ElevatedButton( // Multiplicación
-                      onPressed: () {
-                        setState(() {
-                          operacion = '*';
-                        });
-                      }, child: Text('*')
-                  ),
-                  ElevatedButton( // División
-                      onPressed: () {
-                        setState(() {
-                          operacion = '/';
-                        });
-                      }, child: Text('/')
-                  ),
+                  crearBoton('4'), crearBoton('5'), crearBoton('6'), crearBoton('x'),
                 ],
               ),
-              Padding(padding: EdgeInsets.only(bottom: 24)),
-              ElevatedButton(onPressed: () {
-                // Capturar los operandos
-                int operando1 = 0;
-                int operando2 = 0;
-                try {
-                  operando1 = int.parse(controller1.text);
-                  operando2 = int.parse(controller2.text);
-                } catch (error) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Error: Deben haber dos números para calcular el resultado."))
-                  );
-                  return;
-                }
-
-                setState(() {
-                    switch (operacion) {
-                      case '+':
-                        resultado = operando1 + operando2;
-                        break;
-                      case '-':
-                        resultado = operando1 - operando2;
-                        break;
-                      case '*':
-                        resultado = operando1 * operando2;
-                        break;
-                      case '/':
-                        if(operando2 != 0){
-                          resultado = operando1 ~/ operando2;
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Error: No se puede dividir por cero."))
-                          );
-                        }
-                    }
-                });
-              }, child: Text('Calcular')),
-              Padding(padding: EdgeInsets.only(bottom: 24)),
-              Text("El resultado final es: $resultado")
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  crearBoton('1'), crearBoton('2'), crearBoton('3'), crearBoton('+'),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  crearBoton('0'), crearBoton('AC'), crearBoton('='), crearBoton('-'),
+                ],
+              ),
             ],
           ),
         ),
