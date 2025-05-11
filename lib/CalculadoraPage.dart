@@ -91,28 +91,38 @@ class CalculadoraState extends State<CalculadoraPage> {
               Padding(padding: EdgeInsets.only(bottom: 24)),
               ElevatedButton(onPressed: () {
                 // Capturar los operandos
-                int operando1 = int.parse(controller1.text);
-                int operando2 = int.parse(controller2.text);
+                int operando1 = 0;
+                int operando2 = 0;
+                try {
+                  operando1 = int.parse(controller1.text);
+                  operando2 = int.parse(controller2.text);
+                } catch (error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Error: Deben haber dos números para calcular el resultado."))
+                  );
+                  return;
+                }
+
                 setState(() {
-                  switch (operacion) {
-                    case '+':
-                      resultado = operando1 + operando2;
-                      break;
-                    case '-':
-                      resultado = operando1 - operando2;
-                      break;
-                    case '*':
-                      resultado = operando1 * operando2;
-                      break;
-                    case '/':
-                      if(operando2 != 0){
-                        resultado = operando1 ~/ operando2;
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Error: No se puede dividir por cero."))
-                        );
-                      }
-                  }
+                    switch (operacion) {
+                      case '+':
+                        resultado = operando1 + operando2;
+                        break;
+                      case '-':
+                        resultado = operando1 - operando2;
+                        break;
+                      case '*':
+                        resultado = operando1 * operando2;
+                        break;
+                      case '/':
+                        if(operando2 != 0){
+                          resultado = operando1 ~/ operando2;
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Error: No se puede dividir por cero."))
+                          );
+                        }
+                    }
                 });
               }, child: Text('Calcular')),
               Padding(padding: EdgeInsets.only(bottom: 24)),
